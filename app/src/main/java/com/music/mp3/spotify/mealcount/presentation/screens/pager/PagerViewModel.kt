@@ -6,13 +6,11 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
-import android.icu.util.Calendar
 import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.music.mp3.spotify.mealcount.data.local.entity.MealCountMetaDataEntity
 import com.music.mp3.spotify.mealcount.domain.mappers.getCombineMapOfWholeDayCount
 import com.music.mp3.spotify.mealcount.domain.mappers.toListOfWholeDayCount
 import com.music.mp3.spotify.mealcount.domain.mappers.toRoomWithCountEntity
@@ -184,7 +182,7 @@ class PagerViewModel @Inject constructor(
                     mealCountRepo.insertMealCount(mealWithCounts)
                     Log.d("izaz", "Saved to db")
 
-                    createPdf()
+//                    createPdf()
                 } catch (e: Exception) {
                     Log.d("izaz", "DB")
                     Log.d("izaz", e.message ?: " DB: Unknown error")

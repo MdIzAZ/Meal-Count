@@ -1,9 +1,9 @@
 package com.music.mp3.spotify.mealcount.presentation.screens.home
 
+import android.view.SoundEffectConstants
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -13,28 +13,23 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.music.mp3.spotify.mealcount.R
-import com.music.mp3.spotify.mealcount.data.local.entity.RoomWithCountEntity
 import com.music.mp3.spotify.mealcount.domain.models.WholeDayCount
+import com.music.mp3.spotify.mealcount.presentation.components.CustomAlertDialog
 import com.music.mp3.spotify.mealcount.presentation.components.CustomTopAppBar
 import com.music.mp3.spotify.mealcount.presentation.components.MealSummaryCard
 
@@ -47,6 +42,9 @@ fun HomeScreen(
     onAddNew: () -> Unit,
     onDelete: (String) -> Unit
 ) {
+
+    val view = LocalView.current
+
     Scaffold(
         topBar = {
             CustomTopAppBar(
@@ -56,7 +54,10 @@ fun HomeScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = onAddNew,
+                onClick = {
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
+                    onAddNew()
+                },
                 content = {
                     Icon(
                         imageVector = Icons.Default.Add,
@@ -72,9 +73,24 @@ fun HomeScreen(
         var shouldShowDialog by rememberSaveable { mutableStateOf(false) }
         var dateToBeDeleted by rememberSaveable { mutableStateOf("") }
 
+        if (shouldShowDialog) {
+            CustomAlertDialog(
+                title = "Delete Meal Counts?",
+                message = "Are you sure you want to delete this item? This action cannot be undone.",
+                onDismissRequest = {
+                    dateToBeDeleted = ""
+                    shouldShowDialog = false
+                },
+                onConfirmBtnClick = {
+                    onDelete(dateToBeDeleted)
+                    shouldShowDialog = false
+                }
+            )
+        }
 
 
-        if (shouldShowDialog) AlertDialog(
+
+        /*if (shouldShowDialog) AlertDialog(
             icon = { Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete") },
             title = { Text(text = "Delete Meal Counts?") },
             text = {
@@ -104,7 +120,7 @@ fun HomeScreen(
                     Text("Dismiss")
                 }
             }
-        )
+        )*/
 
 
         val oldCounts = previousCounts.keys.toList()

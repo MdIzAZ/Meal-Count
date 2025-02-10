@@ -1,37 +1,35 @@
 package com.music.mp3.spotify.mealcount.presentation.navigation
 
+import android.app.Activity
 import android.icu.util.Calendar
 import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.music.mp3.spotify.mealcount.presentation.table_screen.TableScreen
 import com.music.mp3.spotify.mealcount.presentation.screens.floors_rooms.SelectFloorAndRooms
 import com.music.mp3.spotify.mealcount.presentation.screens.floors_rooms.SharedViewModel
 import com.music.mp3.spotify.mealcount.presentation.screens.home.HomeScreen
 import com.music.mp3.spotify.mealcount.presentation.screens.home.HomeViewModel
-import com.music.mp3.spotify.mealcount.presentation.screens.menu_selection.Menu
 import com.music.mp3.spotify.mealcount.presentation.screens.menu_selection.MenuSelectionScreen
 import com.music.mp3.spotify.mealcount.presentation.screens.pager.COUNTER_TYPE
 import com.music.mp3.spotify.mealcount.presentation.screens.pager.PagerScreen
 import com.music.mp3.spotify.mealcount.presentation.screens.pager.PagerScreenEvents
 import com.music.mp3.spotify.mealcount.presentation.screens.pager.PagerViewModel
+import com.music.mp3.spotify.mealcount.presentation.table_screen.TableScreen
 import com.music.mp3.spotify.mealcount.presentation.table_screen.TableViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 
 
 @Composable
@@ -45,12 +43,15 @@ fun NavGraph(
         startDestination = Routes.HomeScreen
     ) {
 
+
         composable<Routes.HomeScreen>(
             enterTransition = { slideInHorizontally(initialOffsetX = { -it }) },
             exitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
             popEnterTransition = { slideInHorizontally(initialOffsetX = { it }) },
             popExitTransition = { slideOutHorizontally(targetOffsetX = { -it }) },
         ) {
+
+            val context = LocalContext.current
 
             val homeViewModel = hiltViewModel<HomeViewModel>()
             val previousRecords by homeViewModel.previousRecords.collectAsStateWithLifecycle()
@@ -67,7 +68,7 @@ fun NavGraph(
             HomeScreen(
                 previousCounts = groupedByDate,
                 onBackPress = {
-                    navController.navigateUp()
+                    (context as Activity).finish()
                 },
                 onAddNew = {
                     navController.navigate(Routes.MenuSelectionScreen)
@@ -142,6 +143,9 @@ fun NavGraph(
             popExitTransition = { slideOutHorizontally(targetOffsetX = { it }) },
         ) {
 
+
+
+
             val rooms by sharedViewModel.rooms.collectAsStateWithLifecycle()
             val args1 = it.toRoute<Routes.FloorAndRoomSelectionScreen>()
             val morning = args1.morning
@@ -189,6 +193,9 @@ fun NavGraph(
                         }
                     }
 
+                },
+                onBackPress = {
+                    navController.navigateUp()
                 },
                 onHalalListChange = { names, roomNo, time, changeType ->
                     pagerViewModel.onEvent(

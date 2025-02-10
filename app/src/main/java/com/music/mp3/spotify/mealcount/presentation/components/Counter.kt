@@ -1,5 +1,6 @@
 package com.music.mp3.spotify.mealcount.presentation.components
 
+import android.view.SoundEffectConstants
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.Spring
@@ -28,11 +29,8 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +40,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.positionChange
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -55,11 +54,12 @@ import kotlin.math.sign
 fun CounterButton(
     counterValue: String,
     modifier: Modifier = Modifier,
-    onIncrease:()->Unit,
-    onDecrease:()->Unit,
-    onReset:()->Unit,
+    onIncrease: () -> Unit,
+    onDecrease: () -> Unit,
+    onReset: () -> Unit,
 ) {
 
+    val view = LocalView.current
     val thumbOffsetX = remember { Animatable(0f) }
     val thumbOffsetY = remember { Animatable(0f) }
 
@@ -74,17 +74,35 @@ fun CounterButton(
         ButtonContainer(
             modifier = Modifier,
             thumbOffsetX = thumbOffsetX.value,
-            onValueDecreaseClick = { onDecrease() },
-            onValueIncreaseClick = { onIncrease() },
-            onValueClearClick = { onReset() },
+            onValueDecreaseClick = {
+                onDecrease()
+                view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+            },
+            onValueIncreaseClick = {
+                onIncrease()
+                view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+            },
+            onValueClearClick = {
+                onReset()
+                view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+            },
         )
 
         DraggableThumbButton(
-            value = counterValue.toString(),
-            onClick = { onIncrease() },
+            value = counterValue,
+            onClick = {
+                onIncrease()
+                view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+            },
             modifier = Modifier.align(Alignment.Center),
-            onValueDecreaseClick = { onDecrease() },
-            onValueIncreaseClick = { onIncrease() },
+            onValueDecreaseClick = {
+                onDecrease()
+                view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+            },
+            onValueIncreaseClick = {
+                onIncrease()
+                view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+            },
             thumbOffsetX = thumbOffsetX,
             thumbOffsetY = thumbOffsetY
         )

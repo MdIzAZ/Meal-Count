@@ -1,11 +1,11 @@
 package com.music.mp3.spotify.mealcount.presentation.components
 
+import android.view.SoundEffectConstants
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,11 +24,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.music.mp3.spotify.mealcount.R
 
@@ -41,6 +40,9 @@ fun MealSummaryCard(
     onCardClick: () -> Unit,
     onDelete: (String) -> Unit
 ) {
+
+    val view = LocalView.current
+    
     Box {
         ElevatedCard(
             modifier = Modifier
@@ -51,7 +53,10 @@ fun MealSummaryCard(
                     shape = RoundedCornerShape(0.dp, 20.dp, 0.dp, 20.dp)
                 )
                 .size(190.dp, 200.dp)
-                .clickable { onCardClick() },
+                .clickable {
+                    onCardClick()
+                    view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+                },
             elevation = CardDefaults.elevatedCardElevation(90.dp),
             shape = RoundedCornerShape(0.dp, 20.dp, 0.dp, 20.dp),
             content = {
@@ -86,7 +91,10 @@ fun MealSummaryCard(
                     ElevatedButton(
                         colors = ButtonDefaults.buttonColors()
                             .copy(containerColor = MaterialTheme.colorScheme.secondaryContainer),
-                        onClick = { onDelete(countedAt) },
+                        onClick = {
+                            onDelete(countedAt)
+                            view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+                        },
                         shape = RoundedCornerShape(0.dp, 16.dp, 0.dp, 16.dp),
                         content = {
                             Icon(

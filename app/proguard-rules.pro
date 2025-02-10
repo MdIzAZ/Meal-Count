@@ -19,3 +19,21 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+
+# Preserve generic type signatures for Gson
+-keepattributes Signature
+
+# Keep all Gson fields and classes
+-keep class com.google.gson.** { *; }
+
+# Keep specific types used in TypeToken
+-keep class com.music.mp3.spotify.mealcount.data.local.converter.Converters {
+    <fields>;
+    <methods>;
+}
+
+# Keep your entities and DAOs
+-keep class com.music.mp3.spotify.mealcount.data.local.entity.** { *; }
+-keep class com.music.mp3.spotify.mealcount.data.local.** { *; }
+-keep interface androidx.room.Dao {*;}

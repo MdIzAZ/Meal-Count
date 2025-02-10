@@ -1,9 +1,7 @@
 package com.music.mp3.spotify.mealcount.presentation.components
 
 import android.util.Log
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
+import android.view.SoundEffectConstants
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,8 +26,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.music.mp3.spotify.mealcount.presentation.screens.menu_selection.MealTime
 import com.music.mp3.spotify.mealcount.presentation.screens.menu_selection.Menu
@@ -37,7 +35,6 @@ import com.music.mp3.spotify.mealcount.presentation.screens.pager.COUNTER_TYPE
 import com.music.mp3.spotify.mealcount.presentation.screens.pager.Halal
 import com.music.mp3.spotify.mealcount.presentation.screens.pager.MealType
 import com.music.mp3.spotify.mealcount.presentation.screens.pager.MealWithCounts
-import kotlin.text.Typography.tm
 
 //@Preview(showSystemUi = true)
 @Composable
@@ -55,6 +52,8 @@ fun HorizontalPage(
     onHalalListChange: (names: List<Halal>, roomNo: Int, time: MealTime, changeType: COUNTER_TYPE) -> Unit,
     onNextBtnClick: () -> Unit = {}
 ) {
+
+    val view = LocalView.current
 
     var morning by remember { mutableStateOf(MealWithCounts()) }
     var night by remember { mutableStateOf(MealWithCounts()) }
@@ -75,15 +74,20 @@ fun HorizontalPage(
 
     Scaffold(
         floatingActionButton = {
-            if (isLasPage) FloatingActionButton(
-                onClick = { onNextBtnClick() },
-                content = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
-                        contentDescription = null
-                    )
-                }
-            )
+            if (isLasPage) {
+                FloatingActionButton(
+                    onClick = {
+                        onNextBtnClick()
+                        view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
+                    },
+                    content = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowForwardIos,
+                            contentDescription = null
+                        )
+                    }
+                )
+            }
         }
     ) { ip ->
 

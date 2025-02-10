@@ -1,5 +1,6 @@
 package com.music.mp3.spotify.mealcount.presentation.screens.floors_rooms
 
+import android.view.SoundEffectConstants
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.music.mp3.spotify.mealcount.presentation.components.CounterButton
@@ -34,6 +36,9 @@ fun SelectFloorAndRooms(
     onBackPress: () -> Unit ,
     onNextButtonClick: (Map<Int, Pair<Int, Int>>) -> Unit
 ) {
+
+    val view = LocalView.current
+
     Scaffold(
         topBar = { CustomTopAppBar(title = "Select No of Rooms", onNavIconClick = onBackPress) }
     ) { ip ->
@@ -104,6 +109,7 @@ fun SelectFloorAndRooms(
                     modifier = Modifier.align(Alignment.BottomEnd),
                     onClick = {
                         onNextButtonClick(rooms.value)
+                        view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
                     },
                     content = {
                         Text(

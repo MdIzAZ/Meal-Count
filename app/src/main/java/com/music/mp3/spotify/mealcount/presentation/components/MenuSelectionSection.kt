@@ -1,5 +1,6 @@
 package com.music.mp3.spotify.mealcount.presentation.components
 
+import android.view.SoundEffectConstants
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.positionInWindow
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.DpOffset
@@ -40,6 +42,8 @@ fun MenuSelectionSection(
     onMenuIconClick: () -> Unit = {},
     onMenuSelect: (String) -> Unit = {}
 ) {
+
+    val view = LocalView.current
 
     var isExpanded by rememberSaveable { mutableStateOf(false) }
     var boxRightEdge by remember { mutableStateOf(0f) }
@@ -75,6 +79,7 @@ fun MenuSelectionSection(
             IconButton(
                 onClick = {
                     isExpanded = true
+                    view.playSoundEffect(SoundEffectConstants.CLICK)
                 },
                 content = {
                     Icon(
@@ -104,6 +109,7 @@ fun MenuSelectionSection(
                         )
                     },
                     onClick = {
+                        view.playSoundEffect(SoundEffectConstants.CLICK)
                         onMenuSelect(it.name)
                         isExpanded = false
                     }

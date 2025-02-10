@@ -1,8 +1,7 @@
 package com.music.mp3.spotify.mealcount.presentation.screens.pager
 
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
+import android.view.SoundEffectConstants
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -17,10 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalView
+import com.music.mp3.spotify.mealcount.presentation.components.CustomAlertDialog
 import com.music.mp3.spotify.mealcount.presentation.components.HorizontalPage
 import com.music.mp3.spotify.mealcount.presentation.screens.menu_selection.MealTime
 import com.music.mp3.spotify.mealcount.presentation.screens.menu_selection.Menu
@@ -33,14 +35,34 @@ fun PagerScreen(
     night: String,
     rooms: Map<Int, Pair<Int, Int>>,
     states: PagerScreenState,
+    onBackPress: () -> Unit,
     onCounterValueChane: (roomNo: Int, type: COUNTER_TYPE, mealType: MealType, time: MealTime) -> Unit,
-    onHalalListChange:(names: List<Halal>, roomNo: Int, time: MealTime, changeType: COUNTER_TYPE) -> Unit,
+    onHalalListChange: (names: List<Halal>, roomNo: Int, time: MealTime, changeType: COUNTER_TYPE) -> Unit,
     onNextBtnClick: () -> Unit
 ) {
 
-    val scrollState = rememberScrollableState {
-        it
+    val view = LocalView.current
+
+    var shouldShowDialog by remember { mutableStateOf(false) }
+
+    BackHandler {
+        shouldShowDialog = true
     }
+
+    if (shouldShowDialog) {
+        CustomAlertDialog(
+            title = "Discard Changes?",
+            message = "You have unsaved changes. If you go back now, any new records or changes will not be saved. Do you want to proceed?",
+            onDismissRequest = {
+                shouldShowDialog = false
+            },
+            onConfirmBtnClick = {
+                shouldShowDialog = false
+                onBackPress()
+            }
+        )
+    }
+
 
 
     Scaffold { ip ->
@@ -48,7 +70,6 @@ fun PagerScreen(
             modifier = modifier
                 .padding(ip)
                 .fillMaxSize()
-                .scrollable(scrollState, Orientation.Vertical)
         ) {
 
             val roomsAndFloors = rooms.entries.sortedBy { it.key }.map { it.value }
@@ -79,6 +100,7 @@ fun PagerScreen(
                                 scope.launch {
                                     pagerState.animateScrollToPage(0)
                                 }
+                                view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
                             },
                             text = {
                                 Text(text = "${it + 1}")
@@ -103,6 +125,7 @@ fun PagerScreen(
                                 scope.launch {
                                     pagerState.animateScrollToPage(it)
                                 }
+                                view.playSoundEffect(SoundEffectConstants.NAVIGATION_UP)
                             },
                             text = {
                                 Text(text = "${low + it}")
@@ -128,8 +151,8 @@ fun PagerScreen(
                         dayCount = states.morning[roomNo] ?: MealWithCounts(),
                         nightCounts = states.night[roomNo] ?: MealWithCounts(),
                         onCounterValueChane = onCounterValueChane,
-                        dayHalals = states.dHalal.filter {h -> h.roomNo == roomNo },
-                        nightHalals = states.nHalal.filter { h-> h.roomNo == roomNo },
+                        dayHalals = states.dHalal.filter { h -> h.roomNo == roomNo },
+                        nightHalals = states.nHalal.filter { h -> h.roomNo == roomNo },
                         onHalalListChange = onHalalListChange
                     )
 
